@@ -1,31 +1,30 @@
 
 /**************
- * A registry of provably authentic physical prints and plots of works of art from the Known Origin
- * NFT art project (https://www.knownorigin.io).
+ * A registry of provably authentic physical prints of works of art from the Known Origin
+ * non-fungible art platform. (https://www.knownorigin.io).
  * In order to purchase a print you must be able to prove ownership of the artwork.
- * This is done by sending payment for the print from the account address that 
- * holds the artwork itself. There are four types of purchases. One is a print of your artwork
- * accompanied by an NFC that contains the details of your transaction. A second options is a digital print 
- * of your artwork. You may also 
- * purchase the NFC by itself if you want to print/plot your own artwork. There is a Misc purchase
- * option as well for a potential future item added to the store.
- * 
+ * This is done by sending payment for the print from the account address that
+ * holds the artwork itself. There are three types of purchases. One is a print of your artwork
+ * accompanied by an NFC that contains the details of your transaction and proof of authenticity.
+ * You may also purchase the an authentication NFC by itself if you want to print your own artwork.
+ * There is a Misc purchase option as well for a potential future item added to the store.
+ *
  * To purchase, confirm the price (in wei) of the item you would like to purchase by
- * calling the pricePer* function in the contract. Next, execute the purchase 
- * function for the corresponding item sending the necessary amount in ETH. If you are in 
+ * calling the pricePer* function in the contract. Next, execute the purchase
+ * function for the corresponding item sending the necessary amount in ETH. If you are in
  * the USA the item price includes shipping. There is a price for items shipped
  * internationally so if you are purchasing from outside the USA make sure you send
- * the higher value noted with "IntlShip" in the item's variable name. 
- * 
- * Please also include a contact method in your purchase transaction. You will have to 
- * contact us with your mailing address so we know where to send your print! That information 
+ * the higher value noted with "IntlShip" in the item's variable name.
+ *
+ * Please also include a contact method in your purchase transaction. You will have to
+ * contact us with your mailing address so we know where to send your print! That information
  * must come from the contact method indicated at time of purchase.
  *
  * Prices subject to change without notice. No returns or exchanges.
- * 
+ *
  * Prints produced by Art Blocks LLC, Houston TX. For information or to send
  * your mailing address after a purchase please contact us at info@artblocks.io.
- * 
+ *
  * Copyright Art Blocks LLC 2020. www.artblocks.io.
  *************/
 
@@ -83,7 +82,7 @@ contract IERC721 is IERC165 {
      * @dev Transfers a specific NFT (`tokenId`) from one account (`from`) to
      * another (`to`).
      *
-     * 
+     *
      *
      * Requirements:
      * - `from`, `to` cannot be zero.
@@ -1158,13 +1157,15 @@ contract CustomERC721Metadata is ERC165, ERC721, ERC721Enumerable {
 pragma solidity ^0.5.0;
 
 interface KOv1Interface {
-    
-    function ownerOf (uint256 _artId) external view returns (address); 
+
+    function ownerOf (uint256 _artId) external view returns (address);
+    function tokenURI(uint256 _artId) external view returns (string memory);
 }
 
 interface KOv2Interface {
-    
-    function ownerOf (uint256 _artId) external view returns (address); 
+
+    function ownerOf (uint256 _artId) external view returns (address);
+    function tokenURI(uint256 _artId) external view returns (string memory);
 }
 
 // File: contracts/KOPrintRegistry.sol
@@ -1177,11 +1178,11 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
     ///////////////
     // Variables //
     ///////////////
-   
+
 
     KOv1Interface public kov1Contract;
     KOv2Interface public kov2Contract;
-    
+
     string public tokenBaseURI;
     string public tokenBaseIpfsURI = "https://ipfs.infura.io/ipfs/";
 
@@ -1192,9 +1193,9 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
     uint256 public pricePerPrintIntlShipInWei;
     uint256 public pricePerNFCIntlShipInWei;
     uint256 public pricePerMiscIntlShipInWei;
-    
+
     string public descriptionMiscItem;
-    
+
     uint256 public invocations = 0;
 
     mapping(bytes32 => uint256) public serialToTokenId;
@@ -1202,7 +1203,7 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
     mapping(uint256 => uint256) public tokenIdToArtId;
     mapping(uint256 => string) public tokenIdToNFC;
     mapping(uint256 => string) public tokenIdToContactMethod;
-    
+
     mapping(uint256 => string) public staticIpfsImageLink;
 
 
@@ -1228,17 +1229,17 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
         pricePerPrintInWei = _pricePerPrintInWei;
         pricePerNFCInWei = _pricePerNFCInWei;
         pricePerMiscInWei = _pricePerMiscInWei;
-        
+
         pricePerPrintIntlShipInWei = _pricePerPrintIntlShipInWei;
         pricePerNFCIntlShipInWei = _pricePerNFCIntlShipInWei;
         pricePerMiscIntlShipInWei = _pricePerMiscIntlShipInWei;
-        
+
 
         tokenBaseURI = _tokenBaseURI;
-       
+
         kov1Contract = KOv1Interface(0xDdE2D979e8d39BB8416eAfcFC1758f3CaB2C9C72);
         kov2Contract = KOv2Interface(0xFBeef911Dc5821886e1dda71586d90eD28174B7d);
-        
+
     }
 
 
@@ -1247,7 +1248,7 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
     // Token Creation Functions //
     //////////////////////////////
 
-  
+
 
     function purchasePrint(uint256 _artId, string memory _contactMethod) public payable returns (uint256 _tokenId) {
         require(msg.value == pricePerPrintInWei || msg.value == pricePerPrintIntlShipInWei, "Must send correct amount for a print. Please check price @ pricePerPrintInWei or pricePerPrintIntlShipInWei for international shipments.");
@@ -1256,17 +1257,28 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
         } else {
         require(msg.sender == kov2Contract.ownerOf(_artId), "You must own artwork.");
         }
-        
+
         uint256 tokenId = _mintToken(msg.sender);
-        
+
         tokenIdToArtId[tokenId] = _artId;
         tokenIdToContactMethod[tokenId] = _contactMethod;
         printerAddress.transfer(msg.value);
-        
+
         return tokenId;
     }
-    
-    
+
+    function getKOTokenURI(uint _artId) public view returns (string memory){
+        string memory koTokenURI;
+
+        if (_artId<304){
+        koTokenURI = kov1Contract.tokenURI(_artId);
+        } else {
+        koTokenURI = kov2Contract.tokenURI(_artId);
+        }
+
+        return koTokenURI;
+    }
+
     function purchaseNFCOnly(uint256 _artId, string memory _contactMethod) public payable returns (uint256 _tokenId) {
         require(msg.value == pricePerNFCInWei || msg.value == pricePerNFCIntlShipInWei, "Must send correct amount for an NFC. Please check price @ pricePerNFCInWei or pricePerNFCIntlShipInWei for international shipments.");
         if (_artId<304){
@@ -1274,16 +1286,16 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
         } else {
         require(msg.sender == kov2Contract.ownerOf(_artId), "You must own artwork.");
         }
-        
+
         uint256 tokenId = _mintToken(msg.sender);
-        
+
         tokenIdToArtId[tokenId] = _artId;
         tokenIdToContactMethod[tokenId] = _contactMethod;
         printerAddress.transfer(msg.value);
-        
+
         return tokenId;
     }
-    
+
     function purchaseMisc(uint256 _artId, string memory _contactMethod) public payable returns (uint256 _tokenId) {
         bytes memory tempDescriptionMiscItem = bytes(descriptionMiscItem); // Uses memory
         require(msg.value == pricePerMiscInWei || msg.value == pricePerMiscIntlShipInWei, "Must send correct amount. Please check price @ pricePerMiscInWei or pricePerMiscIntlShipInWei for international shipments.");
@@ -1293,23 +1305,25 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
         } else {
         require(msg.sender == kov2Contract.ownerOf(_artId), "You must own artwork.");
         }
-        
+
         uint256 tokenId = _mintToken(msg.sender);
-        
+
         tokenIdToArtId[tokenId] = _artId;
         tokenIdToContactMethod[tokenId] = _contactMethod;
         printerAddress.transfer(msg.value);
-        
+
         return tokenId;
     }
-    
+
     function mint(uint256 _artId, string memory _nfc) public onlyWhitelisted returns (uint256 _tokenId) {
+        uint256 tokenId;
+
         if (_artId<304){
-        uint256 tokenId = _mintToken(kov1Contract.ownerOf(_artId));
+        tokenId = _mintToken(kov1Contract.ownerOf(_artId));
         } else {
-        uint256 tokenId = _mintToken(kov2Contract.ownerOf(_artId));
+        tokenId = _mintToken(kov2Contract.ownerOf(_artId));
         }
-       
+
         tokenIdToArtId[tokenId] = _artId;
         tokenIdToNFC[tokenId]= _nfc;
 
@@ -1329,54 +1343,54 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
         return invocations;
     }
 
-  
+
 
     //////////////////////////
     // Management functions //
     //////////////////////////
 
-    
+
     function updatePrinterAddress(address payable _printerAddress) public onlyWhitelisted returns (bool) {
         printerAddress = _printerAddress;
         return true;
     }
-    
+
 
     function updatePricePerPrintInWei(uint256 _pricePerPrintInWei) public onlyWhitelisted returns (bool) {
         pricePerPrintInWei = _pricePerPrintInWei;
         return true;
     }
-    
+
     function updatePricePerNFCInWei(uint256 _pricePerNFCInWei) public onlyWhitelisted returns (bool) {
         pricePerNFCInWei = _pricePerNFCInWei;
         return true;
     }
-    
+
     function updatePricePerMiscInWei(uint256 _pricePerMiscInWei) public onlyWhitelisted returns (bool) {
         pricePerMiscInWei = _pricePerMiscInWei;
         return true;
     }
-    
+
     function updatePricePerPrintIntlShipInWei(uint256 _pricePerPrintIntlShipInWei) public onlyWhitelisted returns (bool) {
         pricePerPrintIntlShipInWei = _pricePerPrintIntlShipInWei;
         return true;
     }
-    
+
     function updatePricePerNFCIntlShipInWei(uint256 _pricePerNFCIntlShipInWei) public onlyWhitelisted returns (bool) {
         pricePerNFCIntlShipInWei = _pricePerNFCIntlShipInWei;
         return true;
     }
-    
+
     function updatePricePerMiscIntlShipInWei(uint256 _pricePerMiscIntlShipInWei) public onlyWhitelisted returns (bool) {
         pricePerMiscIntlShipInWei = _pricePerMiscIntlShipInWei;
         return true;
     }
-    
+
     function updateDescriptionMiscItem(string memory _descriptionMiscItem) public onlyWhitelisted returns (bool) {
         descriptionMiscItem = _descriptionMiscItem;
         return true;
     }
-   
+
     function updateTokenBaseURI(string memory _newBaseURI) public onlyWhitelisted returns (bool) {
         tokenBaseURI = _newBaseURI;
         return true;
@@ -1407,26 +1421,26 @@ contract KOPrintRegistry is CustomERC721Metadata, WhitelistedRole {
         tokenIdToArtId[_tokenId] = _artId;
         return true;
     }
-    
+
     function updateTokenContactMethod(uint256 _tokenId, string memory _contactMethod) public returns (bool) {
         require(_exists(_tokenId), "Token must exist");
         require(msg.sender == ownerOf(_tokenId) || isWhitelisted(msg.sender), "You must have permission.");
         tokenIdToContactMethod[_tokenId] = _contactMethod;
         return true;
     }
-    
+
     function updateTokenNFC(uint256 _tokenId, string memory _NFCUID) public onlyWhitelisted returns (bool) {
         require(_exists(_tokenId), "Token must exist");
         tokenIdToNFC[_tokenId] = _NFCUID;
         return true;
     }
-    
 
-    
+
+
     function tokensOfOwner(address owner) external view returns (uint256[] memory) {
         return _tokensOfOwner(owner);
     }
-    
+
 
     function tokenURI(uint256 _tokenId) external view onlyValidTokenId(_tokenId) returns (string memory) {
         // If we have an override then use it
