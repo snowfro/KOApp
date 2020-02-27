@@ -5,8 +5,9 @@ import App from "./App";
 // import drizzle functions and contract artifact
 import { Drizzle, generateStore } from "drizzle";
 import KOPrintRegistry from "./contracts/KOPrintRegistry.json";
+import KOPrintRegistryMinter from "./contracts/KOPrintRegistryMinter.json";
 // let drizzle know what contracts we want
-const options = { contracts: [KOPrintRegistry] };
+const options = { contracts: [KOPrintRegistry, KOPrintRegistryMinter] };
 // setup the drizzle store and drizzle
 const drizzleStore = generateStore(options);
 const drizzle = new Drizzle(options, drizzleStore);

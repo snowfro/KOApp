@@ -4,19 +4,26 @@ import Canvas from './canvas2';
 class GetInfo extends React.Component {
   constructor(props){
     super(props);
-    this.state = {stage:1}
+    this.state = {stage:1,width:null, height:null}
     this.handleClick = this.handleClick.bind(this);
     this.handleBackClick = this.handleBackClick.bind(this);
     this.handleNextClick = this.handleNextClick.bind(this);
     this.handleArtIdChange = this.handleArtIdChange.bind(this);
     this.getURI = this.getURI.bind(this);
+    this.handleWidthAndHeight = this.handleWidthAndHeight.bind(this)
+
+  }
+
+  handleWidthAndHeight(w,h){
+    this.setState({width:w, height:h});
   }
 
   handleArtIdChange(event){
       this.props.setArtId(event.target.value);
 
-
   }
+
+
 
   getURI(){
     const {drizzle} = this.props;
@@ -33,6 +40,7 @@ class GetInfo extends React.Component {
   handleBackClick(){
     //let stage = this.state.stage + direction;
     this.setState({stage: this.state.stage-1});
+    this.props.setTokenURIKey(null);
 
   }
 
@@ -41,10 +49,14 @@ class GetInfo extends React.Component {
 
     this.setState({stage: this.state.stage+1});
     if (this.state.stage===2){
-      this.getURI();}
+      console.log('tag');
+      this.getURI();
+    }
 
     if (this.state.stage>2){
+
       this.props.handleWelcomeChange(1);
+
     }
 
   }
@@ -61,6 +73,9 @@ const contract = drizzleState.contracts.KOPrintRegistry;
 console.log(contract);
 console.log('URIKEY '+this.props.tokenURIKey);
 console.log('art '+this.props.artId);
+
+console.log('w+h'+this.state.width + ' ' + this.state.height);
+
 
   return (
     <div>
@@ -86,29 +101,34 @@ console.log('art '+this.props.artId);
         <br />
         <h4>Step 2: Choose Your Artwork</h4>
         <br />
-        <p>Great! Now we need to choose a Known Origin work. Please type in your ArtId in the box below and click "next step".</p>
+        <p>Great! Now we need to choose a Known Origin work. Please type in your Edition Number in the box below and click "next step".</p>
         <br />
         <input type="number" id="artIdField" disabled={this.state.stage>2} onChange={this.handleArtIdChange.bind(this)} />
       </div>}
 
         {this.state.stage>2 &&
           <div>
+            {contract.getKOTokenURI[this.props.tokenURIKey] && !contract.getKOTokenURI[this.props.tokenURIKey].value &&
+              <h4>This is not a valid token! Please try again.</h4>
+            }
+            {contract.getKOTokenURI[this.props.tokenURIKey] && contract.getKOTokenURI[this.props.tokenURIKey].value &&
+              <div>
           <h4>Step 3: Verify Artwork</h4>
           <br />
           <p>Is this your art? If so click "CONFIRM" below to go to purchase options.</p>
-          </div>}
 
-          {contract.getKOTokenURI[this.props.tokenURIKey] &&
-            <div>
         <Canvas
         imageURI = {contract.getKOTokenURI[this.props.tokenURIKey].value}
+        handleWidthAndHeight = {this.handleWidthAndHeight}
+        width = {this.state.width}
+        height = {this.state.height}
         />
-
+        </div>}
         </div>
       }
 
     <br />
-    <button onClick = {this.handleBackClick} disabled={this.state.stage>1?false:true} className={this.state.stage>1?null:"hidden"}>Previous Step</button><button onClick = {this.handleNextClick} disabled={!this.props.artId&&this.state.stage>1?true:false} >{this.state.stage>2?"CONFIRM":"Next Step"}</button>
+    <button onClick = {this.handleBackClick} disabled={this.state.stage>1?false:true} className={this.state.stage>1?null:"hidden"}>Previous Step</button><button onClick = {this.handleNextClick} disabled={!this.props.artId&&this.state.stage>1 ? true: contract.getKOTokenURI[this.props.tokenURIKey] && !contract.getKOTokenURI[this.props.tokenURIKey].value?true: false} >{this.state.stage>2?"CONFIRM":"Next Step"}</button>
     <br />
     <br />
     <br />

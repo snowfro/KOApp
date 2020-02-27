@@ -6,14 +6,14 @@ class Welcome extends React.Component {
 
     return (
       <div>
-      <h1> Welcome to the Known Origin Artwork Print Registry Store </h1>
+      <h1> Welcome to the Known Origin Print Registry Store </h1>
       <br />
       <h4>Here you'll be able to purchase authentication for your <a href="https://www.knownorigin.io">Known Origin Artwork.</a></h4>
       <br />
       <p>There are two purchase options to choose from:</p>
       <br />
       <ul>
-      <li>A 12"x12" (or smaller) high quality print of your artwork with authentication NFC. </li>
+      <li>A 13"x19" (or smaller) high quality print of your artwork with authentication NFC. Print size is limited to artwork resolution.</li>
       <li>An authentication NFC sticker that you can attatch to a print you already have. </li>
       </ul>
       <br />

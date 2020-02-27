@@ -4,7 +4,8 @@ class Canvas extends React.Component {
 
   constructor(props){
     super(props);
-    this.state = {imgURI:''}
+    this.state = {imgURI:'', width:null, height:null}
+    //this.handleWidthAndHeight = this.handleWidthAndHeight.bind(this);
   }
 
   componentDidMount() {
@@ -15,16 +16,25 @@ class Canvas extends React.Component {
     let imageURI;
     var xhr = new XMLHttpRequest();
 
+    artwork.fillText("Loading....",20,150);
+
 
     // get a callback when the server responds
     xhr.addEventListener('load', () => {
       // update the state of the component with the result here
       console.log('response: '+ xhr.responseText);
+      try{
       var json = JSON.parse(xhr.responseText);
       console.log('json: '+json.image);
       imageURI = json.image;
       console.log('image '+imageURI);
       this.setState({imgURI:imageURI});
+    } catch(err){
+      console.log('NOT JSON');
+        artwork.clearRect(0,0,300,300);
+        this.setState({imgURI:null});
+      artwork.fillText('This is not a valid token/edition please try again', 20,150);
+    }
     })
     // open the request with the verb and the url
     xhr.open('GET', this.props.imageURI)
@@ -33,8 +43,13 @@ class Canvas extends React.Component {
 
 
   img.onload = () => {
+      artwork.clearRect(0,0,300,300);
+      //console.log("w: "+  img.width + "h: "+img.height)
+      this.props.handleWidthAndHeight(img.width, img.height);
+      this.setState({width:img.width, heigh:img.height});
+      //console.log('w+h'+this.props.width+ ' ' + this.props.height);
 
-      artwork.drawImage(img, 0,0,300, 300 * img.height / img.width);
+      artwork.drawImage(img, 0,0, img.height>img.width? 300 * img.width / img.height : 300, img.width>img.height ? 300 * img.height/img.width : 300 );
 
     }
   }
@@ -44,7 +59,7 @@ render() {
     return(
       <div>
         <canvas ref="canvas" width={300} height={300} />
-        <img ref="image" className="hidden" src={this.state.imgURI} alt="10,000 CryptoPunks"/>
+        <img ref="image" className="hidden" src={this.state.imgURI} alt="Known Origin Artwork"/>
       </div>
     )
   }
