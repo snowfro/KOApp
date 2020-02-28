@@ -2,35 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fb6e1929-102e-4eab-ac40-f3d2498fb347" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/build/contracts/.CustomERC721Metadata.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.ERC165.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.ERC721.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.ERC721Enumerable.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.IERC165.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.IERC721.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.IERC721Enumerable.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.IERC721Receiver.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.KOPrintRegistry.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.KOPrintRegistry_drizzle.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.Roles.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.WhitelistAdminRole.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/.WhitelistedRole.json.icloud" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/Address.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/Counters.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/KOPrintRegistryInterface.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/KOPrintRegistryMinter.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/KOv1Interface.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/KOv2Interface.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/Migrations.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/SafeMath.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/contracts/Strings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/priceList.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/priceList.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/welcome.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/welcome.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Migrations.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Migrations.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/2_deploy_contracts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/welcomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/welcomeScreen.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +48,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1582794354681</updated>
-      <workItem from="1582794356196" duration="1961000" />
+      <workItem from="1582794356196" duration="3954000" />
     </task>
     <servers />
   </component>
@@ -81,13 +56,17 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="501" y="222" key="NewModule_or_Project.wizard" timestamp="1582807054776">
+      <screen x="0" y="23" width="1792" height="1013" />
+    </state>
+    <state x="501" y="222" key="NewModule_or_Project.wizard/0.23.1792.1013@0.23.1792.1013" timestamp="1582807054776" />
     <state x="391" y="160" key="SettingsEditor" timestamp="1582796031989">
       <screen x="0" y="23" width="1792" height="1013" />
     </state>
     <state x="391" y="160" key="SettingsEditor/0.23.1792.1013@0.23.1792.1013" timestamp="1582796031989" />
-    <state x="548" y="278" width="683" height="486" key="find.popup" timestamp="1582796450982">
+    <state x="548" y="278" width="683" height="486" key="find.popup" timestamp="1582817048229">
       <screen x="0" y="23" width="1792" height="1013" />
     </state>
-    <state x="548" y="278" width="683" height="486" key="find.popup/0.23.1792.1013@0.23.1792.1013" timestamp="1582796450982" />
+    <state x="548" y="278" width="683" height="486" key="find.popup/0.23.1792.1013@0.23.1792.1013" timestamp="1582817048229" />
   </component>
 </project>
