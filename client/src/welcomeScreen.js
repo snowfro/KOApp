@@ -134,11 +134,10 @@ render(){
     drizzleState={this.props.drizzleState}
 
     />
-    <button onClick = {this.handleClick}>Click Here To Get Started</button>
-    <PriceList
-    drizzle={this.props.drizzle}
-    drizzleState={this.props.drizzleState}
-    />
+    <div className="text-center mb-5 pb-5">
+      <button onClick = {this.handleClick} className="btn btn-primary btn-lg text-center">Click Here To Get Started</button>
+    </div>
+
 
     </div>
   )

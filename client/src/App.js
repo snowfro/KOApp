@@ -97,7 +97,7 @@ render(){
 
   if (this.state.welcomeState===0){
   return(
-    <div className="App">
+    <div>
       <WelcomeScreen
       drizzle={this.props.drizzle}
       drizzleState={this.state.drizzleState}
@@ -123,7 +123,6 @@ render(){
       setOwner1Key = {this.setOwner1Key}
       setOwner2Key = {this.setOwner2Key}
       />
-
       </div>
     )
   } else if (this.state.welcomeState===1) {
