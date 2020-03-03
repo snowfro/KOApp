@@ -20,14 +20,14 @@ class PriceList extends React.Component {
     return (
       <div className="row">
         <div className="col m-4 alert alert-light text-dark">
-          <h4>Domestic (US) Pricing: </h4>
+          <h4>Domestic (US) Pricing </h4>
           <ul>
             <li>13"x19" Print With Authentication NFC: {pricePerPrintInWei && (web3.utils.fromWei((pricePerPrintInWei.value).toString(), 'ether'))}Ξ</li>
             <li>Authentication NFC Only: {pricePerNFCInWei && (web3.utils.fromWei((pricePerNFCInWei.value).toString(), 'ether'))}Ξ</li>
           </ul>
         </div>
         <div className="col m-4 alert alert-light text-dark">
-          <h4>International Pricing: </h4>
+          <h4>International Pricing </h4>
           <ul>
             <li>13"x19" Print With Authentication NFC: {pricePerPrintIntlShipInWei && (web3.utils.fromWei((pricePerPrintIntlShipInWei.value).toString(), 'ether'))}Ξ</li>
             <li>Authentication NFC Only: {pricePerNFCIntlShipInWei && (web3.utils.fromWei((pricePerNFCIntlShipInWei.value).toString(), 'ether'))}Ξ</li>

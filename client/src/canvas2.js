@@ -59,7 +59,7 @@ render() {
     return(
       <div>
         <canvas ref="canvas" width={300} height={300} />
-        <img ref="image" className="hidden" src={this.state.imgURI} alt="Known Origin Artwork"/>
+        <img ref="image" className="d-none" src={this.state.imgURI} alt="Known Origin Artwork"/>
       </div>
     )
   }

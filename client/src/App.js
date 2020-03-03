@@ -9,7 +9,23 @@ import SetConstants from "./setConstants";
 class App extends Component {
   constructor(props){
   super(props);
-  this.state = { loading: true, drizzleState: null, welcomeState: 0, contactMethod: '', artId:null, tokenURIKey:null, creditsToUseKey:null, creditsToGiveKey:null, creditToAddress:null, owner1Key:null, owner2Key:null, creditManagerCreditsToGive:null, creditManagerAddressToCredit:null};
+  this.state = {
+    loading: true,
+    drizzleState: null,
+    welcomeState: 0,
+    contactMethod: '',
+    address:{firstName:'', lastName:'', address1:'', address2:'', city:'', stateProv:'', zip:'', country:''},
+    artId:null,
+    tokenURIKey:null,
+    creditsToUseKey:null,
+    creditsToGiveKey:null,
+    creditToAddress:null,
+    owner1Key:null,
+    owner2Key:null,
+    creditManagerCreditsToGive:null,
+    creditManagerAddressToCredit:null
+  };
+
   this.handleWelcomeChange = this.handleWelcomeChange.bind(this);
   this.addContactMethod = this.addContactMethod.bind(this);
   this.setArtId = this.setArtId.bind(this);
@@ -21,6 +37,7 @@ class App extends Component {
   this.setOwner2Key = this.setOwner2Key.bind(this);
   this.setCreditManagerCreditsToGive = this.setCreditManagerCreditsToGive.bind(this);
   this.setCreditManagerAddressToCredit = this.setCreditManagerAddressToCredit.bind(this);
+  this.handleAddressInput = this.handleAddressInput.bind(this);
 }
   componentDidMount() {
 
@@ -73,15 +90,20 @@ setCreditsToGiveKey(value){
 }
 
 handleWelcomeChange(value){
+  window.scrollTo(0, 0);
   const newWelcomeState = this.state.welcomeState+value;
   this.setState({welcomeState:newWelcomeState});
   if (this.state.welcomeState===2){
-    this.setState({contactMethod: '', artId: null});
+    this.setState({artId: null});
   }
 }
 
 addContactMethod(contactMethod){
   this.setState({contactMethod:contactMethod});
+}
+
+handleAddressInput(type, value){
+  this.setState(state => (state.address[type] = value));
 }
 
 setArtId(artId){
@@ -142,6 +164,8 @@ render(){
       creditsToGiveKey = {this.state.creditsToGiveKey}
       owner1Key = {this.state.owner1Key}
       owner2Key = {this.state.owner2Key}
+      address = {this.state.address}
+      handleAddressInput = {this.handleAddressInput}
     />
   </div>
   )
@@ -159,6 +183,7 @@ render(){
     creditsToGiveKey = {this.state.creditsToGiveKey}
     owner1Key = {this.state.owner1Key}
     owner2Key = {this.state.owner2Key}
+    address = {this.state.address}
     />
     </div>
   )

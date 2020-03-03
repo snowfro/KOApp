@@ -6,7 +6,7 @@ const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 class Purchase extends React.Component{
   constructor(props){
   super(props);
-  this.state = {purchaseType:null, shipType:null, stackId:null, creditSale:false, width:null, height:null}
+  this.state = {purchaseType:null, shipType:null, stackId:null, creditSale:false, width:null, height:null, posted:false}
   this.handleTypeRadio = this.handleTypeRadio.bind(this);
   this.handleShipRadio = this.handleShipRadio.bind(this);
   this.handleGoBack = this.handleGoBack.bind(this);
@@ -113,12 +113,71 @@ getTokenId(){
         const newTokenIdHex = transactions[txHash].receipt.events[0].raw.topics[3];
         const newTokenId = parseInt(newTokenIdHex,16);
         console.log('newTokenIdMint: ' + newTokenId);
+
+        if (!this.state.posted){
+          fetch('https://submit-form.com/-uaRdhfKwMjpOndrBC1Rn', {
+           method: 'POST',
+           headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Headers" : "Origin, X-Requested-With, Content-Type, Accept"
+            },
+           body: JSON.stringify({
+             nft:"KnownOrigin",
+             contactMethod:this.props.contactMethod,
+             artId:this.props.artId,
+             purchaseType:this.state.purchaseType,
+             shipType:this.state.shipType,
+             creditSale:true,
+             firstName:this.props.address.firstName,
+             lastName:this.props.address.lastName,
+             address1:this.props.address.address1,
+             address2:this.props.address.address2,
+             city:this.props.address.city,
+             state:this.props.address.stateProv,
+             country:this.props.address.country
+
+           }),
+         }).then(function(result){
+           console.log('data sent');
+           console.log(result);
+         });
+         this.setState({posted:true});
+       }
+
         return newTokenId;
       } else {
     const newTokenId = transactions[txHash].receipt.events.Transfer.returnValues[2];
     console.log('newTokenIdPurchase: '+newTokenId)
+    if (!this.state.posted){
+      fetch('https://submit-form.com/-uaRdhfKwMjpOndrBC1Rn', {
+       method: 'POST',
+       headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers" : "Origin, X-Requested-With, Content-Type, Accept"
+        },
+       body: JSON.stringify({
+         nft:"KnownOrigin",
+         contactMethod:this.props.contactMethod,
+         artId:this.props.artId,
+         creditSale:false,
+         shipType:this.state.shipType
+       }),
+     }).then(function(result){
+       console.log('data sent');
+       console.log(result);
+     });
+     this.setState({posted:true});
+   }
+
     return newTokenId;
   }
+
+
+
   } else {
     return null;
   }
@@ -164,10 +223,16 @@ getTokenId(){
       console.log('ctu: '+creditsToUse.value);
     }
     return (
+  <div className="container mt-5">
+  <div className="jumbotron">
       <div>
       <h1>Known Origin Art Print Registry Purchase Page</h1>
       <br />
-      <h4>Almost there! Now you will choose your purchase options and complete the transaction for Edition #{this.props.artId}.</h4>
+      <h4>Almost there!
+      <br />
+      Now you will choose your purchase options and complete the transaction for Edition #{this.props.artId}.
+      <br />
+      </h4>
     <Canvas
     imageURI = {contract.getKOTokenURI[this.props.tokenURIKey].value}
     handleWidthAndHeight = {this.handleWidthAndHeight}
@@ -179,10 +244,13 @@ getTokenId(){
     <p>There are two ways to proceed. You may purchase <i>an up</i> to 13"x19" (33x48.25cm) high quality digital print with attached authentication NFC
     or if you already have a nice print you can simply buy the NFC sticker for authenticating your own prints. </p>
     <br />
+    <div className="alert alert-warning" role="alert">
     <p><b>NOTE: </b>Not all artwork is available in high resolution. We will <b>ONLY</b> print art as large as it can be printed while maintaining quality results.
     Please verify resolution of your artwork before purchase. <b>Smart contract transactions are final</b>! </p>
-    <br />
+    </div>
+    <div className="alert alert-warning" role="alert">
     <p>If you purchase a print of a GIF we will print the first frame of the GIF (shown above) as large as we can while maintaining a quality print resolution. Remember you can always purchase just the NFC to authenticate your own print or video installation.</p>
+    </div>
     <br />
     <h4>Your artwork dimensions are {this.state.width && this.state.width}px x {this.state.height && this.state.height}px.</h4>
     <br />
@@ -194,27 +262,51 @@ getTokenId(){
     <br />
     <p><i>You may have access to a higher resolution image than what's hosted on IPFS.</i> The gallery page on the Known Origin website might offer you a higher resolution image which we'd be happy to print. If you have any questions please don't hesitate to ask before completing this transaction.</p>
     <br />
+    <div className="alert alert-primary" role="alert">
     <p>Please select one:</p>
-    <br />
     <label><input type="radio" name="purchaseType" value="Print + NFC" onChange={this.handleTypeRadio} />Purchase Print+NFC</label><br />
     <label><input type="radio" name="purchaseType" value="NFC Only" onChange={this.handleTypeRadio} />Purchase NFC Only</label>
+    </div>
 
     {this.state.purchaseType &&
       <div>
       <h4>Purchase Type: {this.state.purchaseType}</h4>
       <br />
+      <div className="alert alert-primary" role="alert">
       <p>Now we need to know where this is going. Please select whether you are located in the USA or abroad. Item price will adjust accordingly.</p>
       <label><input type="radio" name="shipType" value="Domestic" onChange={this.handleShipRadio} />Domestic Shipping (within USA)</label><br />
       <label><input type="radio" name="shipType" value="International" onChange={this.handleShipRadio} />International Shipping</label>
+      </div>
       {this.state.shipType &&
       <div>
       <h4>Shiping Type: {this.state.shipType}</h4>
       <br />
       <h4>Total: {creditsToUse && creditsToUse.value>0 ? 'FRE' : priceObject[this.findPrice()] && (web3.utils.fromWei(priceObject[this.findPrice()].value.toString(), 'ether'))}Ξ</h4>
       <br />
+      <div className="alert alert-secondary" role="alert">
+      <b>Contact Method: {this.props.contactMethod}</b>
+      <br />
+      <br />
+      Shipping to:
+      <br />
+      {this.props.address.firstName} {this.props.address.lastName}
+      <br />
+      {this.props.address.address1}
+      <br />
+      {this.props.address.address2 &&
+        <div>
+        {this.props.address.address2}
+        <br />
+        </div>
+      }
+
+      {this.props.address.city}, {this.props.address.stateProv} {this.props.address.zip}
+      <br />
+      {this.props.address.country}
+      </div>
 
       <br />
-      <button className = "bigButton" disabled = {status?true:false} onClick={() => {this.handlePurchase(purchaseType)}}>{status?status:'Purchase'}</button>
+      <button className="btn btn-success" disabled = {status?true:false} onClick={() => {this.handlePurchase(purchaseType)}}>{status?status:'Purchase'}</button>
       {status === 'success' &&
     <div>
     <h1>Congrats!</h1>
@@ -236,6 +328,8 @@ getTokenId(){
     <br />
     <button onClick = {status==='success'? this.handleStartOver : this.handleGoBack}>{status==='success'?'Start Over':'Go Back'}</button>
     </div>
+  </div>
+  </div>
   )
   }
 
