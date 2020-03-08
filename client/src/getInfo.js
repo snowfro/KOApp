@@ -55,7 +55,6 @@ class GetInfo extends React.Component {
 
     if (this.state.stage>2){
 
-
       this.props.handleWelcomeChange(1);
 
     }
@@ -123,67 +122,78 @@ console.log('w+h'+this.state.width + ' ' + this.state.height);
     <small id="contactMethodHelp" class="form-text text-muted">Possible contact methods include e-mail address, twitter handle, or <b>full</b> Discord handle (including numerical ID).</small>
 
     <div className="input-group mb-3">
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="contact-method">Contact Method:</span>
-    </div>
-    <input type="text" value={this.props.contactMethod} className="form-control" aria-label="Contact Method" aria-describedby="contact-method" disabled={this.state.stage>1} onChange={this.handleContactMethodChange.bind(this)} />
-    </div>
-
-    <div className="input-group flex-nowrap">
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="first-name">First Name:</span>
-    </div>
-    <input type="text" value={this.props.address.firstName} className="form-control" aria-label="First Name" aria-describedby="first-name" disabled={this.state.stage>1} onChange={this.handleFirstNameChange.bind(this)} />
-
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="last-name">Last Name:</span>
-    </div>
-    <input type="text" value={this.props.address.lastName} className="form-control" aria-label="Last Name" aria-describedby="last-name" disabled={this.state.stage>1} onChange={this.handleLastNameChange.bind(this)} />
+      <div className="input-group-prepend">
+        <span className="input-group-text" id="contact-method">Contact Method:</span>
+      </div>
+      <input type="text" value={this.props.contactMethod} className="form-control" aria-label="Contact Method" aria-describedby="contact-method" disabled={this.state.stage>1} onChange={this.handleContactMethodChange.bind(this)} />
     </div>
 
-    <div className="input-group flex-nowrap">
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="address1">Address 1:</span>
-    </div>
-    <input type="text" value={this.props.address.address1} className="form-control" aria-label="Address 1" aria-describedby="address1" disabled={this.state.stage>1} onChange={this.handleAddress1Change.bind(this)} />
-    </div>
-
-    <div className="input-group flex-nowrap">
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="address2">Address 2:</span>
-    </div>
-    <input type="text" value={this.props.address.address2} className="form-control" aria-label="Address 2" aria-describedby="address2" disabled={this.state.stage>1} onChange={this.handleAddress2Change.bind(this)} />
-    </div>
-
-    <div className="input-group flex-nowrap">
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="city">City:</span>
-    </div>
-    <input type="text" value={this.props.address.city} className="form-control" aria-label="City" aria-describedby="city" disabled={this.state.stage>1} onChange={this.handleCityChange.bind(this)} />
-
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="state">State/Province/Region:</span>
-    </div>
-    <input type="text" value={this.props.address.stateProv} className="form-control" aria-label="State" aria-describedby="state" disabled={this.state.stage>1} onChange={this.handleStateProvChange.bind(this)} />
-
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="zip">ZIP/Postal Code:</span>
-    </div>
-    <input type="text" value={this.props.address.zip} className="form-control" aria-label="ZIP" aria-describedby="zip" disabled={this.state.stage>1} onChange={this.handleZipChange.bind(this)} />
+    <div className="form-group row mb-3">
+        <div className="input-group col-lg">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="first-name">First Name:</span>
+          </div>
+          <input type="text" value={this.props.address.firstName} className="form-control" aria-label="First Name" aria-describedby="first-name" disabled={this.state.stage>1} onChange={this.handleFirstNameChange.bind(this)} />
+        </div>
+        <div className="input-group col-lg">
+          <div className="input-group-prepend">
+            <span className="input-group-text" id="last-name">Last Name:</span>
+          </div>
+          <input type="text" value={this.props.address.lastName} className="form-control" aria-label="Last Name" aria-describedby="last-name" disabled={this.state.stage>1} onChange={this.handleLastNameChange.bind(this)} />
+        </div>
     </div>
 
-    <div className="input-group flex-nowrap">
-    <div className="input-group-prepend">
-    <span className="input-group-text" id="country">Country:</span>
+    <div className="form-group row mb-3">
+      <div className="input-group col-lg">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="address1">Address 1:</span>
+        </div>
+        <input type="text" value={this.props.address.address1} className="form-control" aria-label="Address 1" aria-describedby="address2" disabled={this.state.stage>1} onChange={this.handleAddress1Change.bind(this)} />
+      </div>
+      <div className="input-group col-lg">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="address2">Address 2:</span>
+        </div>
+        <input type="text" value={this.props.address.address2} className="form-control" aria-label="Address 2" aria-describedby="address2" disabled={this.state.stage>1} onChange={this.handleAddress2Change.bind(this)} />
+        </div>
     </div>
-    <input type="text" value={this.props.address.country} className="form-control" aria-label="Country" aria-describedby="country" disabled={this.state.stage>1} onChange={this.handleCountryChange.bind(this)} />
+
+    <div className="form-group row mb-3">
+      <div className="input-group col-lg">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="city">City:</span>
+        </div>
+        <input type="text" value={this.props.address.city} className="form-control" aria-label="City" aria-describedby="city" disabled={this.state.stage>1} onChange={this.handleCityChange.bind(this)} />
+      </div>
+      <div className="input-group col-lg">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="state">State/Province/Region:</span>
+        </div>
+        <input type="text" value={this.props.address.stateProv} className="form-control" aria-label="State" aria-describedby="state" disabled={this.state.stage>1} onChange={this.handleStateProvChange.bind(this)} />
+      </div>
+      <div className="input-group col-lg">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="zip">ZIP/Postal Code:</span>
+        </div>
+        <input type="text" value={this.props.address.zip} className="form-control" aria-label="ZIP" aria-describedby="zip" disabled={this.state.stage>1} onChange={this.handleZipChange.bind(this)} />
+      </div>
     </div>
+
+    <div className="form-group row mb-3">
+      <div className="input-group col">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="country">Country:</span>
+        </div>
+        <input type="text" value={this.props.address.country} className="form-control" aria-label="Country" aria-describedby="country" disabled={this.state.stage>1} onChange={this.handleCountryChange.bind(this)} />
+      </div>
+    </div>
+
     <br />
     <div className="alert alert-warning">
     <p>Please take an extra moment to verify your address and contact method before proceeding. </p>
     </div>
     <div className="alert alert-danger">
-    <p><b>We will under no circumstances share the information you provide above and use it solely for shipping purposes.</b></p>
+    <p><b>We will use the above information solely for shipping purposes and will not share the information under any circumstances.</b></p>
     </div>
 
     {this.state.stage>1 &&

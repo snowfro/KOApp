@@ -151,27 +151,36 @@ getTokenId(){
     const newTokenId = transactions[txHash].receipt.events.Transfer.returnValues[2];
     console.log('newTokenIdPurchase: '+newTokenId)
     if (!this.state.posted){
-      fetch('https://submit-form.com/-uaRdhfKwMjpOndrBC1Rn', {
-       method: 'POST',
-       headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers" : "Origin, X-Requested-With, Content-Type, Accept"
-        },
-       body: JSON.stringify({
-         nft:"KnownOrigin",
-         contactMethod:this.props.contactMethod,
-         artId:this.props.artId,
-         creditSale:false,
-         shipType:this.state.shipType
-       }),
-     }).then(function(result){
-       console.log('data sent');
-       console.log(result);
-     });
-     this.setState({posted:true});
-   }
+          fetch('https://submit-form.com/-uaRdhfKwMjpOndrBC1Rn', {
+           method: 'POST',
+           headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Headers" : "Origin, X-Requested-With, Content-Type, Accept"
+            },
+           body: JSON.stringify({
+             nft:"KnownOrigin",
+             contactMethod:this.props.contactMethod,
+             artId:this.props.artId,
+             purchaseType:this.state.purchaseType,
+             shipType:this.state.shipType,
+             creditSale:false,
+             firstName:this.props.address.firstName,
+             lastName:this.props.address.lastName,
+             address1:this.props.address.address1,
+             address2:this.props.address.address2,
+             city:this.props.address.city,
+             state:this.props.address.stateProv,
+             country:this.props.address.country
+
+           }),
+         }).then(function(result){
+           console.log('data sent');
+           console.log(result);
+         });
+         this.setState({posted:true});
+       }
 
     return newTokenId;
   }
@@ -223,8 +232,8 @@ getTokenId(){
       console.log('ctu: '+creditsToUse.value);
     }
     return (
-  <div className="container mt-5">
-  <div className="jumbotron">
+      <div className="container mt-5">
+      <div className="jumbotron">
       <div>
       <h1>Known Origin Art Print Registry Purchase Page</h1>
       <br />

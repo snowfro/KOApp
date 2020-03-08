@@ -2,8 +2,6 @@ import React from "react";
 
 import Welcome from "./welcome";
 
-
-
 class WelcomeScreen extends React.Component {
   constructor(props){
     super(props);

@@ -18,6 +18,7 @@ class PriceList extends React.Component {
 
 
     return (
+
       <div className="row">
         <div className="col m-4 alert alert-light text-dark">
           <h4>Domestic (US) Pricing </h4>

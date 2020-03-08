@@ -9,7 +9,7 @@ class Welcome extends React.Component {
                 <div className="jumbotron">
                     <h1 className="display-4">KnownOrigin Print Registry</h1>
                     <p className="lead mt-2">Welcome to the Known Origin artwork print registry store. Here you'll be able to purchase prints and/or authentication for your <a
-                        href="https://www.knownorigin.io">KnownOrigin</a> Artwork</p>
+                        href="https://knownorigin.io" target="_blank" rel="noopener noreferrer">KnownOrigin</a> artwork.</p>
                     <hr className="my-4"></hr>
                     <p className="">There are two purchase options to choose from:</p>
                     <div className="row">
@@ -23,7 +23,7 @@ class Welcome extends React.Component {
                             An authentication NFC sticker that you can attach to a print you already have.
                         </div>
                     </div>
-                    <div className="alert">You will be transacting directly through the <a href="https://etherscan.io/address/0x193f0b73F01b2f347B0128bCFc0366ca9c87DE9E">KO Artwork Print Registry</a>  Smart Contract.
+                    <div className="alert">You will be transacting directly through the <a href="https://etherscan.io/address/0x193f0b73F01b2f347B0128bCFc0366ca9c87DE9E" target="_blank" rel="noopener noreferrer">Art BLocks LLC KO Artwork Print Registry</a>  Smart Contract.
                         In other words, the storefront itself is a smart contract. In order to purchase an artwork print or NFC, you must have ownership of that artwork in
                         your wallet <i>that you send the funds from</i>.
                     </div>
