@@ -73,8 +73,9 @@ console.log("type: "+purchaseType + " Func: "+ purchaseFunc);
 
   const creditPurchaseConcat = "Credit purchase | " + purchaseFunc + " | " + this.props.contactMethod;
   const creditsToUse = this.props.drizzleState.contracts.KOPrintRegistryMinter.addressToCreditsToSpend[this.props.creditsToUseKey];
+  const artCreditsToUse = this.props.drizzleState.contracts.KOPrintRegistryMinter.artIdToCreditsToSpend[this.props.artCreditsToUse];
 
-  if (creditsToUse && creditsToUse.value>0){
+  if ((creditsToUse && creditsToUse.value>0)||(artCreditsToUse && artCreditsToUse.value>0)){
     this.setState({creditSale:true});
     stackId = contract2.methods['mint'].cacheSend(this.props.artId,creditPurchaseConcat, {
       from: drizzleState.accounts[0],
@@ -227,10 +228,16 @@ getTokenId(){
     const {drizzleState} = this.props;
     const contract = drizzleState.contracts.KOPrintRegistry;
     const creditsToUse = this.props.drizzleState.contracts.KOPrintRegistryMinter.addressToCreditsToSpend[this.props.creditsToUseKey];
+    const artCreditsToUse = this.props.drizzleState.contracts.KOPrintRegistryMinter.artIdToCreditsToSpend[this.props.artCreditsToUse];
 
     if(creditsToUse){
       console.log('ctu: '+creditsToUse.value);
     }
+
+    if(artCreditsToUse){
+      console.log('art ctu: '+artCreditsToUse.value);
+    }
+
     return (
       <div className="container mt-5">
       <div className="jumbotron">
@@ -290,7 +297,7 @@ getTokenId(){
       <div>
       <h4>Shiping Type: {this.state.shipType}</h4>
       <br />
-      <h4>Total: {creditsToUse && creditsToUse.value>0 ? 'FRE' : priceObject[this.findPrice()] && (web3.utils.fromWei(priceObject[this.findPrice()].value.toString(), 'ether'))}Ξ</h4>
+      <h4>Total: {((creditsToUse && creditsToUse.value>0)||(artCreditsToUse && artCreditsToUse.value>0)) ? 'FRE' : priceObject[this.findPrice()] && (web3.utils.fromWei(priceObject[this.findPrice()].value.toString(), 'ether'))}Ξ</h4>
       <br />
       <div className="alert alert-secondary" role="alert">
       <b>Contact Method: {this.props.contactMethod}</b>

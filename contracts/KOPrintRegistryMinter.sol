@@ -255,13 +255,12 @@ library Strings {
     }
 }
 
-
-
 pragma solidity ^0.5.0;
 
-interface KOPrintRegistryInterface {
+interface ArtPrintRegistryInterface {
 
     function mint(uint256 _artId, string calldata _nfc) external returns (uint256 _tokenId);
+    function pricePerPrintIntlShipInWei() external view returns (uint256 _pricePerPrintIntlShipInWei);
 }
 
 pragma solidity ^0.5.0;
@@ -279,8 +278,7 @@ interface KOv2Interface {
 }
 
 
-
-// File: contracts/PunkPrintRegistryMinter.sol
+// File: contracts/KOPrintRegistryMinter.sol
 
 pragma solidity ^0.5.0;
 
@@ -292,15 +290,15 @@ contract KOPrintRegistryMinter  {
     ///////////////
 
 
-    KOPrintRegistryInterface public koprContract;
+    ArtPrintRegistryInterface public aprContract;
     KOv1Interface public kov1Contract;
     KOv2Interface public kov2Contract;
 
     address public owner1;
-    address public owner2;
+    address payable public printerAddress;
 
+    mapping(uint256 => uint256) public artIdToCreditsToSpend;
     mapping(address => uint256) public addressToCreditsToSpend;
-
     mapping(address => uint256) public managerAddressToCreditsToGive;
 
 
@@ -311,33 +309,35 @@ contract KOPrintRegistryMinter  {
     // Constructor //
     /////////////////
 
-    constructor(address _owner2, address _registryContract) public {
+    constructor(address payable _printerAddress, address _registryContract, address _artContractV1, address _artContractV2) public {
 
-        koprContract = KOPrintRegistryInterface(_registryContract);
-        kov1Contract = KOv1Interface(0xDdE2D979e8d39BB8416eAfcFC1758f3CaB2C9C72);
-        kov2Contract = KOv2Interface(0xFBeef911Dc5821886e1dda71586d90eD28174B7d);
-
+        aprContract = ArtPrintRegistryInterface(_registryContract);
+        kov1Contract = KOv1Interface(_artContractV1);
+        kov2Contract = KOv2Interface(_artContractV2);
         owner1 = msg.sender;
-        owner2 = _owner2;
+        printerAddress = _printerAddress;
 
     }
-
-
 
     //////////////////////////////
     // Minting Function         //
     //////////////////////////////
 
-    function mint(uint256 _artId, string memory _contactMethodAndType) public returns (uint256) {
-        uint256 balance = addressToCreditsToSpend[msg.sender];
+    function mint(uint256 _artId, string memory _contactMethodAndType) public returns (uint256 _tokenId) {
+        uint256 artCreditBalance = artIdToCreditsToSpend[_artId];
+        uint256 addressCreditBalance = addressToCreditsToSpend[msg.sender];
         if (_artId<304){
         require(msg.sender == kov1Contract.ownerOf(_artId), "You must own artwork.");
         } else {
         require(msg.sender == kov2Contract.ownerOf(_artId), "You must own artwork.");
         }
-        require(balance>0, "You must have credits!");
-        uint256 mintedToken = koprContract.mint(_artId, _contactMethodAndType);
+        require(artCreditBalance>0 || addressCreditBalance >0 , "Must have a credit!");
+        uint256 mintedToken = aprContract.mint(_artId, _contactMethodAndType);
+        if (artCreditBalance >0) {
+        artIdToCreditsToSpend[_artId] --;
+        } else {
         addressToCreditsToSpend[msg.sender] --;
+        }
         return mintedToken;
     }
 
@@ -345,26 +345,66 @@ contract KOPrintRegistryMinter  {
     // Manager Function         //
     //////////////////////////////
 
-    function giveCredit(address _recipient) public {
+    function giveArtCredit(uint256 _artId) public payable {
         uint creditsToGive = managerAddressToCreditsToGive[msg.sender];
-        require(creditsToGive>0 || msg.sender==owner1 || msg.sender==owner2 , "You must have permission!");
+        require(creditsToGive>0 || msg.sender==owner1 || msg.sender==printerAddress || msg.value==aprContract.pricePerPrintIntlShipInWei(), "You must have permission!");
+        artIdToCreditsToSpend[_artId] ++;
+
+        if (msg.value>0) {
+                printerAddress.transfer(msg.value);
+            } else {
+                if (msg.sender==owner1 || msg.sender==printerAddress){
+                    return;
+                } else {
+                    managerAddressToCreditsToGive[msg.sender] --;
+                }
+            }
+    }
+
+    function giveAddressCredit(address _recipient) public payable {
+        uint creditsToGive = managerAddressToCreditsToGive[msg.sender];
+        require(creditsToGive>0 || msg.sender==owner1 || msg.sender==printerAddress || msg.value==aprContract.pricePerPrintIntlShipInWei(), "You must have permission!");
         addressToCreditsToSpend[_recipient] ++;
-        managerAddressToCreditsToGive[msg.sender] --;
+
+        if (msg.value>0) {
+                printerAddress.transfer(msg.value);
+            } else {
+                if (msg.sender==owner1 || msg.sender==printerAddress){
+                    return;
+                } else {
+                    managerAddressToCreditsToGive[msg.sender] --;
+                }
+            }
+    }
+
+
+    function removeArtCredit(uint256 _artId) public {
+        uint creditsToSpend = artIdToCreditsToSpend[_artId];
+        require(creditsToSpend>0, "There must be a credit to remove!");
+        require(msg.sender==owner1 || msg.sender==printerAddress , "You must have permission!");
+        artIdToCreditsToSpend[_artId] --;
+    }
+
+    function removeAddressCredit(address _recipient) public {
+        uint creditsToSpend = addressToCreditsToSpend[_recipient];
+        require(creditsToSpend>0, "There must be a credit to remove!");
+        require(msg.sender==owner1 || msg.sender==printerAddress , "You must have permission!");
+        addressToCreditsToSpend[_recipient] --;
     }
 
     //////////////////////////////
     // Owner Functions          //
     //////////////////////////////
 
-    function setManagerCredits(address _manager, uint _credits) public returns (bool) {
-        require(msg.sender == owner1 || msg.sender == owner2);
-        managerAddressToCreditsToGive[_manager]=_credits;
+    function updatePrinterAddress(address payable _printerAddress) public returns (bool) {
+        require(msg.sender == owner1 || msg.sender == printerAddress);
+        printerAddress = _printerAddress;
         return true;
     }
 
-    function removeManager(address _manager) public returns (bool) {
-        require(msg.sender == owner1 || msg.sender == owner2);
-        managerAddressToCreditsToGive[_manager]=0;
+    function setManagerCredits(address _manager, uint _credits) public returns (bool) {
+        require(msg.sender == owner1 || msg.sender == printerAddress);
+        managerAddressToCreditsToGive[_manager]=_credits;
         return true;
     }
 

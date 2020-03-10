@@ -5,7 +5,7 @@ import PriceList from './priceList';
 class Welcome extends React.Component {
     render() {
         return (
-            <div className="container mt-5">
+            <div className="container">
                 <div className="jumbotron">
                     <h1 className="display-4">KnownOrigin Print Registry</h1>
                     <p className="lead mt-2">Welcome to the Known Origin artwork print registry store. Here you'll be able to purchase prints and/or authentication for your <a

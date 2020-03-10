@@ -33,6 +33,13 @@ class GetInfo extends React.Component {
 
   }
 
+  getArtCreditsToUse(){
+    const {drizzle} = this.props;
+    const contract = drizzle.contracts.KOPrintRegistryMinter;
+    let artCreditsToUseDataKey = contract.methods['artIdToCreditsToSpend'].cacheCall(this.props.artId);
+    this.props.setArtCreditsToUse(artCreditsToUseDataKey);
+  }
+
   handleClick(){
   this.props.handleWelcomeChange(-1);
   }
@@ -51,6 +58,7 @@ class GetInfo extends React.Component {
     if (this.state.stage===2){
       console.log('tag');
       this.getURI();
+      this.getArtCreditsToUse();
     }
 
     if (this.state.stage>2){
@@ -102,12 +110,17 @@ render(){
 
 const {drizzleState} = this.props;
 const contract = drizzleState.contracts.KOPrintRegistry;
+const minter = drizzleState.contracts.KOPrintRegistryMinter;
 console.log(contract);
 console.log('URIKEY '+this.props.tokenURIKey);
 console.log('art '+this.props.artId);
 
 console.log('w+h'+this.state.width + ' ' + this.state.height);
+console.log('art credits to use key: '+ this.props.artCreditsToUse);
 
+if (minter.artIdToCreditsToSpend[this.props.artCreditsToUse]){
+  console.log('art credits: '+ minter.artIdToCreditsToSpend[this.props.artCreditsToUse].value);
+}
 
   return (
   <div className="container mt-5">
@@ -119,7 +132,7 @@ console.log('w+h'+this.state.width + ' ' + this.state.height);
     <br />
     <p>Please fill out your contact details below. Note that the contact method you provide will be included in your purchase transaction and recorded on the blockchain.
     This will be our only way to contact you in case we need clarification about your order.</p>
-    <small id="contactMethodHelp" class="form-text text-muted">Possible contact methods include e-mail address, twitter handle, or <b>full</b> Discord handle (including numerical ID).</small>
+    <small id="contactMethodHelp" className="form-text text-muted">Possible contact methods include e-mail address, twitter handle, or <b>full</b> Discord handle (including numerical ID).</small>
 
     <div className="input-group mb-3">
       <div className="input-group-prepend">
@@ -211,6 +224,7 @@ console.log('w+h'+this.state.width + ' ' + this.state.height);
             {contract.getKOTokenURI[this.props.tokenURIKey] && !contract.getKOTokenURI[this.props.tokenURIKey].value &&
               <h4>This is not a valid token! Please try again.</h4>
             }
+
             {contract.getKOTokenURI[this.props.tokenURIKey] && contract.getKOTokenURI[this.props.tokenURIKey].value &&
               <div>
           <h4>Step 3: Verify Artwork</h4>
@@ -225,11 +239,20 @@ console.log('w+h'+this.state.width + ' ' + this.state.height);
         height = {this.state.height}
         />
 
-        </div>}
         </div>
       }
 
-    <br />
+        {minter.artIdToCreditsToSpend[this.props.artCreditsToUse] && minter.artIdToCreditsToSpend[this.props.artCreditsToUse].value>0 &&
+          <div className='alert alert-success'>
+            <h4>This Edition has a free print credit!</h4>
+          </div>
+
+            }
+
+        </div>
+      }
+
+
     <button onClick = {this.handleBackClick} disabled={this.state.stage>1?false:true} className={this.state.stage>1?null:"hidden"}>Previous Step</button><button onClick = {this.handleNextClick} disabled={!this.props.artId&&this.state.stage>1 ? true: contract.getKOTokenURI[this.props.tokenURIKey] && !contract.getKOTokenURI[this.props.tokenURIKey].value?true: false} >{this.state.stage>2?"CONFIRM":"Next Step"}</button>
     <br />
     <br />
